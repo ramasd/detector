@@ -15,7 +15,17 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        foreach (range(1,5) as $index) {
+        DB::table('users')->insert([
+            'name' => 'Admin',
+            'email' => 'admin@admin.com',
+            'status' => 1,
+            'comment' => 'comment',
+            'password' => Hash::make('password'),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        foreach (range(1,4) as $index) {
             DB::table('users')->insert([
                 'name' => Str::random(10),
                 'email' => Str::random(10) . '@test.com',
