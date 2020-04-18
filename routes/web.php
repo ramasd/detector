@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,10 +14,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', 'ProjectController@index')->name('home');
+
+Auth::routes([
+    'register' => false,
+    'reset' => false,
+    'verify' => false
+]);
+
+Route::group(['middleware' => 'auth'], function() {
+    Route::resource('users', 'UserController');
+    Route::resource('projects', 'ProjectController');
+    Route::resource('logs', 'LogController');
 });
 
-Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');

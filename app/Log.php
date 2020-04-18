@@ -9,6 +9,13 @@ class Log extends Model
 {
     use SoftDeletes;
 
+    /**
+     * @var array
+     */
+    protected $fillable = [
+        'project_id', 'data',
+    ];
+
     // Relationships
 
     /**

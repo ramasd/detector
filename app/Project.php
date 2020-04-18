@@ -9,6 +9,29 @@ class Project extends Model
 {
     use SoftDeletes;
 
+    /**
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'url', 'status', 'user_id', 'check_frequency', 'last_check',
+    ];
+
+    /**
+     * Override parent boot and Call deleting event
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function($project) {
+            foreach ($project->logs()->get() as $log) {
+                $log->delete();
+            }
+        });
+    }
+
     // Relationships
 
     /**

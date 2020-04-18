@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'comment', 'status',
     ];
 
     /**
@@ -37,6 +37,22 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Override parent boot and Call deleting event
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function($user) {
+            foreach ($user->projects()->get() as $project) {
+                $project->delete();
+            }
+        });
+    }
 
     // Relationships
 
