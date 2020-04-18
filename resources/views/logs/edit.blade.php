@@ -30,7 +30,7 @@
                                 <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('Data') }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="data" type="text" class="form-control @error('data') is-invalid @enderror" name="data" value="{{ $log->data }}" required autocomplete="data">
+                                    <input id="data" type="text" class="form-control @error('data') is-invalid @enderror" name="data" value="{{ $log->data }}" autocomplete="data">
 
                                     @error('url')
                                     <span class="invalid-feedback" role="alert">

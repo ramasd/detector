@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -27,10 +29,10 @@ class UserController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param StoreUserRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
         User::create([
             'name' => $request->name,
@@ -66,11 +68,11 @@ class UserController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param UpdateUserRequest $request
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
         $user = User::findOrFail($id);
 

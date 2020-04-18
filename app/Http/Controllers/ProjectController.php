@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
 use App\Project;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -27,10 +29,10 @@ class ProjectController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param StoreProjectRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(StoreProjectRequest $request)
     {
         Project::create([
             'name' => $request->name,
@@ -70,11 +72,11 @@ class ProjectController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param UpdateProjectRequest $request
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(UpdateProjectRequest $request, $id)
     {
         $project = Project::findOrFail($id);
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateLogRequest;
 use App\Log;
 use App\Project;
 use Illuminate\Http\Request;
@@ -63,11 +64,11 @@ class LogController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param UpdateLogRequest $request
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(UpdateLogRequest $request, $id)
     {
         $log = Log::findOrFail($id);
 
