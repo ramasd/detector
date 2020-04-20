@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Log;
+use App\Mail\ProjectErrorMail;
+use App\Mail\ProjectNoErrorMail;
 use App\Project;
 use Carbon\Carbon;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 
 class ProjectController extends Controller
 {
@@ -17,7 +20,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        $projects = Project::all()->sortByDesc('id');
 
         return view('projects.index', compact('projects'));
     }
@@ -57,7 +60,6 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
 
         return view('projects.show', compact('project'));
-
     }
 
     /**
@@ -69,8 +71,6 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
 
         return view('projects.edit', compact('project'));
-
-
     }
 
     /**
@@ -113,10 +113,15 @@ class ProjectController extends Controller
         foreach ($projects as $project) {
             try {
                 $request_data = $this->getRequestData($project->url);
-                $json = $this->arrayToJson($request_data);
             } catch (ConnectionException $e) {
-                $json = 'URL is invalid';
+                $request_data = ['error_message' => $e->getMessage()];
             }
+
+            $project_last_log_data = $this->getProjectLastLogData($project);
+
+            $last_status = $this->getProjectLastLogStatusOrError($project_last_log_data);
+
+            $json = json_encode($request_data);
 
             Log::create([
                 'project_id' => $project->id,
@@ -126,6 +131,20 @@ class ProjectController extends Controller
             $project->update([
                 'last_check' => Carbon::now()->addHours(3)
             ]);
+
+            if (isset($request_data['status'])) {
+                if ($request_data['status'] != $last_status AND $request_data['status'] >= 400) {
+                    Mail::to('receiver@receiver.com')->send(new ProjectErrorMail($project));
+                }
+                if ($last_status AND $request_data['status'] != $last_status AND $request_data['status'] < 400) {
+                    Mail::to('receiver@receiver.com')->send(new ProjectNoErrorMail($project));
+                }
+            }
+            if (isset($request_data['error_message'])) {
+                if ($request_data['error_message'] != $last_status) {
+                    Mail::to('receiver@receiver.com')->send(new ProjectErrorMail($project));
+                }
+            }
         }
 
         return redirect()->route('logs.index')->with('success', 'Logs created successfully!');
@@ -155,11 +174,46 @@ class ProjectController extends Controller
     }
 
     /**
-     * @param $array
-     * @return false|string
+     * @param $project
+     * @return array|mixed
      */
-    public function arrayToJson($array)
+    public function getProjectLastLogData($project)
     {
-        return response()->json($array)->getContent();
+        $project_last_log_data = [];
+
+        if ($this->projectHasLog($project)) {
+            $last_data = $project->logs()->latest('created_at')->firstOrFail()->data;
+            $project_last_log_data = json_decode($last_data, true);
+        }
+
+        return $project_last_log_data;
     }
+
+    /**
+     * @param $project
+     * @return mixed
+     */
+    public function projectHasLog($project)
+    {
+        return $project->logs()->exists();
+    }
+
+    /**
+     * @param $project_last_log_data
+     * @return |null
+     */
+    public function getProjectLastLogStatusOrError($project_last_log_data)
+    {
+        $last_status = null;
+
+        if (isset($project_last_log_data['status'])) {
+            $last_status = $project_last_log_data['status'];
+        }
+        if (isset($project_last_log_data['error_message'])) {
+            $last_status = $project_last_log_data['error_message'];
+        }
+
+        return $last_status;
+    }
+
 }
