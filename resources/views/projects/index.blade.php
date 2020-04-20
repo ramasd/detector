@@ -15,6 +15,8 @@
         @auth()
             <a href="{{ route('projects.create') }}" class="btn btn-primary">New Project</a>
             <br /><br />
+            <a href="{{ route('projects.check') }}" class="btn btn-primary">Check Projects</a>
+            <br /><br />
         @endauth
 
         <table class="table">

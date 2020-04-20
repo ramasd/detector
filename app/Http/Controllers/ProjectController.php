@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use App\Log;
 use App\Project;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Facades\Http;
 
 class ProjectController extends Controller
 {
@@ -99,5 +101,65 @@ class ProjectController extends Controller
         $project->delete();
 
         return redirect()->route('projects.index')->with('success', 'Project has been deleted successfully!');
+    }
+
+    /**
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function checkProjects()
+    {
+        $projects = Project::all();
+
+        foreach ($projects as $project) {
+            try {
+                $request_data = $this->getRequestData($project->url);
+                $json = $this->arrayToJson($request_data);
+            } catch (ConnectionException $e) {
+                $json = 'URL is invalid';
+            }
+
+            Log::create([
+                'project_id' => $project->id,
+                'data' => $json,
+            ]);
+
+            $project->update([
+                'last_check' => Carbon::now()->addHours(3)
+            ]);
+        }
+
+        return redirect()->route('logs.index')->with('success', 'Logs created successfully!');
+    }
+
+    /**
+     * @param $url
+     * @return array
+     */
+    public function getRequestData($url)
+    {
+        $data = [];
+
+        $response = Http::get($url);
+
+        $data['status'] = $response->status();
+        if (isset($response->transferStats)) {
+            $data['response_time'] = $response->transferStats->getHandlerStat('namelookup_time') + $response->transferStats->getHandlerStat('connect_time');
+            $data['load_time'] = $response->transferStats->getHandlerStat('total_time');
+            $data['server_ip'] = $response->transferStats->getHandlerStat('primary_ip');
+        }
+        $data['redirect_detected'] = $response->redirect();
+        $data['server_error'] = $response->serverError();
+        $data['client_error'] = $response->clientError();
+
+        return $data;
+    }
+
+    /**
+     * @param $array
+     * @return false|string
+     */
+    public function arrayToJson($array)
+    {
+        return response()->json($array)->getContent();
     }
 }
