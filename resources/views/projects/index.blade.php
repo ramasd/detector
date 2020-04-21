@@ -30,6 +30,7 @@
                     <th>User</th>
                     <th>Check Frequency</th>
                     <th>Last Check</th>
+                    <th>Checked</th>
                     @auth()
                         <th>Actions</th>
                     @endauth
@@ -44,6 +45,7 @@
                     <td><a href="{{ route('users.show', $project->user_id) }}">{{ $project->user->name }}</a></td>
                     <td>{{ $project->check_frequency }}</td>
                     <td>{{ $project->last_check }}</td>
+                    <td>{{ $project->checked }}</td>
                     @auth
                         <td>
                             <a class="btn btn-primary" href="{{ route('projects.edit', $project->id) }}">Edit</a>

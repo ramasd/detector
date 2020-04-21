@@ -44,7 +44,7 @@ class ProjectController extends Controller
             'status' => $request->status,
             'user_id' => auth()->id(),
             'check_frequency' => 20,
-            'last_check' => Carbon::now(),
+            'last_check' => Carbon::now()->addHours(3),
         ]);
 
         return redirect()->route('projects.index')->with('success', 'Project has been created successfully!');
@@ -108,7 +108,7 @@ class ProjectController extends Controller
     public function checkProjects()
     {
         $projects = Project::active()->notChecked()->checkTime()->take(config('project.quantity'))->get();
-dd($projects);
+
         foreach ($projects as $project) {
             try {
                 $request_data = $this->getRequestData($project->url);

@@ -10,6 +10,13 @@ class Log extends Model
     use SoftDeletes;
 
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'logs';
+
+    /**
      * @var array
      */
     protected $fillable = [

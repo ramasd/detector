@@ -10,6 +10,13 @@ class Project extends Model
     use SoftDeletes;
 
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'projects';
+
+    /**
      * @var array
      */
     protected $fillable = [
