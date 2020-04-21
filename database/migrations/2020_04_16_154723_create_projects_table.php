@@ -21,6 +21,7 @@ class CreateProjectsTable extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->unsignedInteger('check_frequency');
             $table->dateTime('last_check');
+            $table->tinyInteger('checked')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

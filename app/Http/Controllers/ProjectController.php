@@ -9,7 +9,6 @@ use App\Mail\ProjectErrorMail;
 use App\Mail\ProjectNoErrorMail;
 use App\Project;
 use Carbon\Carbon;
-use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 
@@ -108,12 +107,12 @@ class ProjectController extends Controller
      */
     public function checkProjects()
     {
-        $projects = Project::all();
-
+        $projects = Project::active()->notChecked()->checkTime()->take(config('project.quantity'))->get();
+dd($projects);
         foreach ($projects as $project) {
             try {
                 $request_data = $this->getRequestData($project->url);
-            } catch (ConnectionException $e) {
+            } catch (\Exception $e) {
                 $request_data = ['error_message' => $e->getMessage()];
             }
 
@@ -129,7 +128,8 @@ class ProjectController extends Controller
             ]);
 
             $project->update([
-                'last_check' => Carbon::now()->addHours(3)
+                'last_check' => Carbon::now()->addHours(3),
+                'checked' => 1,
             ]);
 
             if (isset($request_data['status'])) {
@@ -145,6 +145,11 @@ class ProjectController extends Controller
                     Mail::to('receiver@receiver.com')->send(new ProjectErrorMail($project));
                 }
             }
+        }
+
+        if (count(Project::active()->notChecked()->checkTime()->get()) == 0) {
+            Project::query()->update(['checked' => null]);
+            return redirect()->route('logs.index')->with('success', 'All projects are checked!');
         }
 
         return redirect()->route('logs.index')->with('success', 'Logs created successfully!');

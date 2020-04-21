@@ -13,7 +13,7 @@ class Project extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'url', 'status', 'user_id', 'check_frequency', 'last_check',
+        'name', 'url', 'status', 'user_id', 'check_frequency', 'last_check', 'checked',
     ];
 
     /**
@@ -48,5 +48,30 @@ class Project extends Model
     public function logs()
     {
         return $this->hasMany(Log::class);
+    }
+
+    // Scopes
+
+    /**
+     * @param $scope
+     * @return mixed
+     */
+    public function scopeActive($scope)
+    {
+        return $scope->where('status', 1);
+    }
+
+    /**
+     * @param $scope
+     * @return mixed
+     */
+    public function scopeNotChecked($scope)
+    {
+        return $scope->whereNull('checked');
+    }
+
+    public function scopeCheckTime($scope)
+    {
+        return $scope->whereRaw('check_frequency < TIMESTAMPDIFF(MINUTE, last_check, NOW())');
     }
 }
