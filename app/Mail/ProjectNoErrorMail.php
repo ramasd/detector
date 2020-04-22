@@ -12,14 +12,17 @@ class ProjectNoErrorMail extends Mailable
     use Queueable, SerializesModels;
 
     public $project;
+    public $request_data;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($project)
+    public function __construct($project, $request_data)
     {
         $this->project = $project;
+        $this->request_data = $request_data;
     }
 
     /**

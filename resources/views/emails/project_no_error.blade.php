@@ -1,15 +1,17 @@
 @component('mail::message')
 # Introduction
 
-No Error
+<p>No Error</p>
 
-<p>Project Name: {{ $project->name }}</p>
+<p><b>Project Name</b>: {{ $project->name }}</p>
 <br />
-<p>Project URL: {{ $project->url }}</p>
+<p><b>Project URL</b>: {{ $project->url }}</p>
 <br />
-<p>User Name: {{ $project->user->name }}</p>
+<p><b>User Name</b>: {{ $project->user->name }}</p>
 <br />
-<p>Last Check: {{ $project->last_check }}</p>
+<p><b>Last Check</b>: {{ $project->last_check }}</p>
+<br />
+<p><b>Status</b>: {{ $request_data['status'] ?? "" }}</p>
 <br />
 
 @component('mail::button', ['url' => ''])

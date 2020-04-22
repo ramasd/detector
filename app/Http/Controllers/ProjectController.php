@@ -134,15 +134,15 @@ class ProjectController extends Controller
 
             if (isset($request_data['status'])) {
                 if ($request_data['status'] != $last_status AND $request_data['status'] >= 400) {
-                    Mail::to('receiver@receiver.com')->send(new ProjectErrorMail($project));
+                    Mail::to('receiver@receiver.com')->send(new ProjectErrorMail($project, $request_data));
                 }
                 if ($last_status AND $request_data['status'] != $last_status AND $request_data['status'] < 400) {
-                    Mail::to('receiver@receiver.com')->send(new ProjectNoErrorMail($project));
+                    Mail::to('receiver@receiver.com')->send(new ProjectNoErrorMail($project, $request_data));
                 }
             }
             if (isset($request_data['error_message'])) {
                 if ($request_data['error_message'] != $last_status) {
-                    Mail::to('receiver@receiver.com')->send(new ProjectErrorMail($project));
+                    Mail::to('receiver@receiver.com')->send(new ProjectErrorMail($project, $request_data));
                 }
             }
         }
