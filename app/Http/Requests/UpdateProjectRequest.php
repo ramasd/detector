@@ -25,7 +25,9 @@ class UpdateProjectRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'url' => 'required',
+            'url' => 'required|regex:/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/',
+            'check_frequency' => 'required|integer',
+            'status' => '',
         ];
     }
 }

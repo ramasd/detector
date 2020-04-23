@@ -26,12 +26,26 @@
                             </div>
 
                             <div class="form-group row">
-                                <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('URL') }}</label>
+                                <label for="url" class="col-md-4 col-form-label text-md-right">{{ __('URL') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="url" type="text" class="form-control @error('url') is-invalid @enderror" name="url" value="{{ old('url') }}" required autocomplete="url">
 
                                     @error('url')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="check_frequency" class="col-md-4 col-form-label text-md-right">{{ __('Check Frequency') }}</label>
+
+                                <div class="col-md-6">
+                                    <input id="check_frequency" type="text" class="form-control @error('check_frequency') is-invalid @enderror" name="check_frequency" value="{{ old('check_frequency') }}" required autocomplete="check_frequency">
+
+                                    @error('check_frequency')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>

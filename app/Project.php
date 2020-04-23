@@ -77,6 +77,10 @@ class Project extends Model
         return $scope->whereNull('checked');
     }
 
+    /**
+     * @param $scope
+     * @return mixed
+     */
     public function scopeCheckTime($scope)
     {
         return $scope->whereRaw('check_frequency <= TIMESTAMPDIFF(MINUTE, last_check, NOW())');

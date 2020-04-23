@@ -5,21 +5,31 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Log;
-use App\Mail\ProjectErrorMail;
-use App\Mail\ProjectNoErrorMail;
-use App\Project;
+use App\Services\ProjectService;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Mail;
 
 class ProjectController extends Controller
 {
+    /**
+     * @var ProjectService
+     */
+    protected $projectService;
+
+    /**
+     * ProjectController constructor.
+     * @param ProjectService $projectService
+     */
+    public function __construct(ProjectService $projectService)
+    {
+        $this->projectService = $projectService;
+    }
+
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
-        $projects = Project::all()->sortByDesc('id');
+        $projects = $this->projectService->index();
 
         return view('projects.index', compact('projects'));
     }
@@ -38,14 +48,8 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        Project::create([
-            'name' => $request->name,
-            'url' => $request->url,
-            'status' => $request->status,
-            'user_id' => auth()->id(),
-            'check_frequency' => 20,
-            'last_check' => Carbon::now()->addHours(3),
-        ]);
+        $attributes = $request->all();
+        $this->projectService->create($attributes);
 
         return redirect()->route('projects.index')->with('success', 'Project has been created successfully!');
     }
@@ -56,7 +60,7 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        $project = Project::findOrFail($id);
+        $project = $this->projectService->findProjectById($id);
 
         return view('projects.show', compact('project'));
     }
@@ -67,7 +71,7 @@ class ProjectController extends Controller
      */
     public function edit($id)
     {
-        $project = Project::findOrFail($id);
+        $project = $this->projectService->findProjectById($id);
 
         return view('projects.edit', compact('project'));
     }
@@ -79,13 +83,10 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, $id)
     {
-        $project = Project::findOrFail($id);
+        $attributes = $request->all();
+        $attributes['status'] = $request->status;
 
-        $project->update([
-            'name' => $request->name,
-            'url' => $request->url,
-            'status' => $request->status,
-        ]);
+        $this->projectService->update($attributes, $id);
 
         return redirect()->route('projects.index')->with('success', 'Project has been updated successfully!');
     }
@@ -96,8 +97,7 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
-        $project = Project::findOrFail($id);
-        $project->delete();
+        $this->projectService->delete($id);
 
         return redirect()->route('projects.index')->with('success', 'Project has been deleted successfully!');
     }
@@ -107,18 +107,17 @@ class ProjectController extends Controller
      */
     public function checkProjects()
     {
-        $projects = Project::active()->notChecked()->checkTime()->take(config('project.quantity'))->get();
+        $quantity = config('project.settings.quantity');
+
+        $projects = $this->projectService->getProjectsForCheck($quantity);
 
         foreach ($projects as $project) {
-            try {
-                $request_data = $this->getRequestData($project->url);
-            } catch (\Exception $e) {
-                $request_data = ['error_message' => $e->getMessage()];
-            }
 
-            $project_last_log_data = $this->getProjectLastLogData($project);
+            $request_data = $this->projectService->tryToGetRequestData($project);
 
-            $last_status = $this->getProjectLastLogStatusOrError($project_last_log_data);
+            $project_latest_log_data = $this->projectService->getProjectLatestLogData($project);
+
+            $latest_status = $this->projectService->getProjectLatestLogStatusOrError($project_latest_log_data);
 
             $json = json_encode($request_data);
 
@@ -127,98 +126,20 @@ class ProjectController extends Controller
                 'data' => $json,
             ]);
 
-            $project->update([
+            $this->projectService->update([
                 'last_check' => Carbon::now()->addHours(3),
                 'checked' => 1,
-            ]);
+            ], $project->id);
 
-            if (isset($request_data['status'])) {
-                if ($request_data['status'] != $last_status AND $request_data['status'] >= 400) {
-                    Mail::to('receiver@receiver.com')->send(new ProjectErrorMail($project, $request_data));
-                }
-                if ($last_status AND $request_data['status'] != $last_status AND $request_data['status'] < 400) {
-                    Mail::to('receiver@receiver.com')->send(new ProjectNoErrorMail($project, $request_data));
-                }
-            }
-            if (isset($request_data['error_message'])) {
-                if ($request_data['error_message'] != $last_status) {
-                    Mail::to('receiver@receiver.com')->send(new ProjectErrorMail($project, $request_data));
-                }
-            }
+            $this->projectService->sendEmailIfStatusChange($request_data, $latest_status, $project);
         }
 
-        if (count(Project::active()->notChecked()->checkTime()->get()) == 0) {
-            Project::query()->update(['checked' => null]);
+        if (count($this->projectService->getProjectsForCheck($quantity)) == 0) {
+            $this->projectService->resetChecked();
+
             return redirect()->route('logs.index')->with('success', 'All projects are checked!');
         }
 
         return redirect()->route('logs.index')->with('success', 'Logs created successfully!');
     }
-
-    /**
-     * @param $url
-     * @return array
-     */
-    public function getRequestData($url)
-    {
-        $data = [];
-
-        $response = Http::get($url);
-
-        $data['status'] = $response->status();
-        if (isset($response->transferStats)) {
-            $data['response_time'] = $response->transferStats->getHandlerStat('namelookup_time') + $response->transferStats->getHandlerStat('connect_time');
-            $data['load_time'] = $response->transferStats->getHandlerStat('total_time');
-            $data['server_ip'] = $response->transferStats->getHandlerStat('primary_ip');
-        }
-        $data['redirect_detected'] = $response->redirect();
-        $data['server_error'] = $response->serverError();
-        $data['client_error'] = $response->clientError();
-
-        return $data;
-    }
-
-    /**
-     * @param $project
-     * @return array|mixed
-     */
-    public function getProjectLastLogData($project)
-    {
-        $project_last_log_data = [];
-
-        if ($this->projectHasLog($project)) {
-            $last_data = $project->logs()->latest('created_at')->firstOrFail()->data;
-            $project_last_log_data = json_decode($last_data, true);
-        }
-
-        return $project_last_log_data;
-    }
-
-    /**
-     * @param $project
-     * @return mixed
-     */
-    public function projectHasLog($project)
-    {
-        return $project->logs()->exists();
-    }
-
-    /**
-     * @param $project_last_log_data
-     * @return |null
-     */
-    public function getProjectLastLogStatusOrError($project_last_log_data)
-    {
-        $last_status = null;
-
-        if (isset($project_last_log_data['status'])) {
-            $last_status = $project_last_log_data['status'];
-        }
-        if (isset($project_last_log_data['error_message'])) {
-            $last_status = $project_last_log_data['error_message'];
-        }
-
-        return $last_status;
-    }
-
 }

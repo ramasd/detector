@@ -1,5 +1,7 @@
 <?php
 
 return [
-    'quantity' => 5,
+    'settings' => [
+        'quantity' => 5,
+    ]
 ];
