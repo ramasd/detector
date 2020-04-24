@@ -29,29 +29,20 @@ class LogRepository
     }
 
     /**
-     * @param $id
-     * @return mixed
-     */
-    public function findOrFail($id)
-    {
-        return $this->log->findOrFail($id);
-    }
-
-    /**
      * @param array $attributes
-     * @param $id
+     * @param int $id
      * @return mixed
      */
-    public function update(array $attributes, $id)
+    public function update(array $attributes, int $id)
     {
         return $this->log->findOrFail($id)->update($attributes);
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return mixed
      */
-    public function delete($id)
+    public function delete(int $id)
     {
         return $this->log->findOrFail($id)->delete();
     }

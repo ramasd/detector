@@ -20,6 +20,7 @@
                     <th>ID</th>
                     <th>Project</th>
                     <th>Data</th>
+                    <th>Created At</th>
                     <th>Actions</th>
                 </tr>
             @endif
@@ -28,6 +29,7 @@
                     <td>{{ $log->id }}</td>
                     <td><a href="{{ route('projects.show', $log->project_id) }}">{{ $log->project->name }}</a></td>
                     <td>{{ $log->data }}</td>
+                    <td>{{ $log->created_at }}</td>
                     <td>
                         <a class="btn btn-primary" href="{{ route('logs.edit', $log->id) }}">Edit</a>
 

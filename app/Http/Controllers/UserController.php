@@ -4,23 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\User;
+use App\Services\UserService;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @var UserService
+     */
+    protected $userService;
+
+    /**
+     * UserController constructor.
+     * @param UserService $userService
+     */
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
-        $users = User::all()->sortByDesc('id');
+        $users = $this->userService->index();
 
         return view('users.index', compact('users'));
     }
 
     /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create()
     {
@@ -33,71 +47,61 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'status' => $request->status,
-            'comment' => $request->comment,
-        ]);
+        $attributes = $request->except('password');
+        $attributes['password'] = Hash::make($request->password);
+        $this->userService->store($attributes);
 
         return redirect()->route('users.index')->with('success', 'User has been created successfully!');
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param int $id
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show($id)
+    public function show(int $id)
     {
-        $user = User::findOrFail($id);
+        $user = $this->userService->findUserById($id);
 
         return view('users.show', compact('user'));
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param int $id
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(int $id)
     {
-        $user = User::findOrFail($id);
+        $user = $this->userService->findUserById($id);
 
         return view('users.edit', compact('user'));
     }
 
     /**
      * @param UpdateUserRequest $request
-     * @param $id
+     * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(UpdateUserRequest $request, $id)
+    public function update(UpdateUserRequest $request, int $id)
     {
-        $user = User::findOrFail($id);
+        $attributes = $request->except(['status', 'password']);
+        $attributes['status'] = $request->status;
 
-        if ($request->get('password') == '') {
-            $user->update($request->except('password'));
-        } else {
-            $user->update([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'status' => $request->status,
-                'comment' => $request->comment,
-            ]);
+        if (!is_null($request->password)) {
+            $attributes['password'] = Hash::make($request->password);
         }
+
+        $this->userService->update($attributes, $id);
 
         return redirect()->route('users.index')->with('success', 'User has been updated successfully!');
     }
 
     /**
-     * @param $id
+     * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
+        $this->userService->delete($id);
 
         return redirect()->route('users.index')->with('success', 'User has been deleted successfully!');
     }

@@ -49,7 +49,7 @@ class ProjectController extends Controller
     public function store(StoreProjectRequest $request)
     {
         $attributes = $request->all();
-        $this->projectService->create($attributes);
+        $this->projectService->store($attributes);
 
         return redirect()->route('projects.index')->with('success', 'Project has been created successfully!');
     }
@@ -125,7 +125,7 @@ class ProjectController extends Controller
                 'checked' => 1,
             ], $project->id);
 
-            $this->projectService->sendEmailIfStatusChange($request_data, $latest_status, $project);
+            $this->projectService->sendEmailIfStatusChange($request_data, $project, $latest_status);
         }
 
         if (count($this->projectService->getProjectsForCheck($quantity)) == 0) {

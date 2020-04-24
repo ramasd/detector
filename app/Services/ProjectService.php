@@ -38,7 +38,7 @@ class ProjectService
      * @param array $attributes
      * @return mixed
      */
-    public function create(array $attributes)
+    public function store(array $attributes)
     {
         $attributes['user_id'] = auth()->id();
         $attributes['last_check'] = Carbon::now();
@@ -107,10 +107,10 @@ class ProjectService
     }
 
     /**
-     * @param $project
+     * @param Project $project
      * @return array
      */
-    public function tryToGetRequestData($project)
+    public function tryToGetRequestData(Project $project)
     {
         try {
             $request_data = $this->getRequestData($project->url);
@@ -122,10 +122,10 @@ class ProjectService
     }
 
     /**
-     * @param $project
+     * @param Project $project
      * @return array|mixed
      */
-    public function getProjectLatestLogData($project)
+    public function getProjectLatestLogData(Project $project)
     {
         $project_latest_log_data = [];
 
@@ -164,17 +164,17 @@ class ProjectService
     }
 
     /**
-     * @param $request_data
+     * @param array $request_data
      * @param $latest_status
-     * @param $project
+     * @param Project $project
      */
-    public function sendEmailIfStatusChange($request_data, $latest_status, $project)
+    public function sendEmailIfStatusChange(array $request_data, Project $project, $latest_status)
     {
         if (isset($request_data['status'])) {
             if ($request_data['status'] != $latest_status AND $request_data['status'] >= 400) {
                 Mail::to('receiver@receiver.com')->send(new ProjectErrorMail($project, $request_data));
             }
-            if ($latest_status AND $request_data['status'] != $latest_status AND $request_data['status'] < 400) {
+            if (!is_null($latest_status) AND $request_data['status'] != $latest_status AND $request_data['status'] < 400) {
                 Mail::to('receiver@receiver.com')->send(new ProjectNoErrorMail($project, $request_data));
             }
         }

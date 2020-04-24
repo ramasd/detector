@@ -41,7 +41,7 @@ class ProjectRepository
      * @param $id
      * @return mixed
      */
-    public function findOrFail($id)
+    public function findOrFail(int $id)
     {
         return $this->project->findOrFail($id);
     }
@@ -51,7 +51,7 @@ class ProjectRepository
      * @param $id
      * @return mixed
      */
-    public function update(array $attributes, $id)
+    public function update(array $attributes, int $id)
     {
         return $this->project->findOrFail($id)->update($attributes);
     }
@@ -60,7 +60,7 @@ class ProjectRepository
      * @param $id
      * @return mixed
      */
-    public function delete($id)
+    public function delete(int $id)
     {
         return $this->project->findOrFail($id)->delete();
     }
@@ -69,7 +69,7 @@ class ProjectRepository
      * @param $quantity
      * @return mixed
      */
-    public function getProjectsForCheck($quantity)
+    public function getProjectsForCheck(int $quantity)
     {
         return $this->project->active()->notChecked()->checkTime()->take($quantity)->get();
     }
@@ -78,7 +78,7 @@ class ProjectRepository
      * @param $project
      * @return mixed
      */
-    public function projectHasLog($project)
+    public function projectHasLog(Project $project)
     {
         return $project->logs()->exists();
     }
