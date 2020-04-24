@@ -85,7 +85,6 @@ class ProjectController extends Controller
     {
         $attributes = $request->all();
         $attributes['status'] = $request->status;
-
         $this->projectService->update($attributes, $id);
 
         return redirect()->route('projects.index')->with('success', 'Project has been updated successfully!');
@@ -108,17 +107,12 @@ class ProjectController extends Controller
     public function checkProjects()
     {
         $quantity = config('project.settings.quantity');
-
         $projects = $this->projectService->getProjectsForCheck($quantity);
 
         foreach ($projects as $project) {
-
             $request_data = $this->projectService->tryToGetRequestData($project);
-
             $project_latest_log_data = $this->projectService->getProjectLatestLogData($project);
-
             $latest_status = $this->projectService->getProjectLatestLogStatusOrError($project_latest_log_data);
-
             $json = json_encode($request_data);
 
             Log::create([

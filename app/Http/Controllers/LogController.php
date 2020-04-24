@@ -5,16 +5,31 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateLogRequest;
 use App\Log;
 use App\Project;
+use App\Services\LogService;
 use Illuminate\Http\Request;
 
 class LogController extends Controller
 {
     /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @var LogService
+     */
+    protected $logService;
+
+    /**
+     * LogController constructor.
+     * @param LogService $logService
+     */
+    public function __construct(LogService $logService)
+    {
+        $this->logService = $logService;
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
-        $logs = Log::all()->sortByDesc('id');
+        $logs = $this->logService->index();
 
         return view('logs.index', compact('logs'));
     }
@@ -53,7 +68,7 @@ class LogController extends Controller
 
     /**
      * @param $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function edit($id)
     {
@@ -70,12 +85,8 @@ class LogController extends Controller
      */
     public function update(UpdateLogRequest $request, $id)
     {
-        $log = Log::findOrFail($id);
-
-        $log->update([
-            'project_id' => $request->project_id,
-            'data' => $request->data,
-        ]);
+        $attributes = $request->all();
+        $this->logService->update($attributes, $id);
 
         return redirect()->route('logs.index')->with('success', 'Log has been updated successfully!');
     }
@@ -86,8 +97,7 @@ class LogController extends Controller
      */
     public function destroy($id)
     {
-        $log = Log::findOrFail($id);
-        $log->delete();
+        $this->logService->delete($id);
 
         return redirect()->route('logs.index')->with('success', 'Log has been deleted successfully!');
     }
