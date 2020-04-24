@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Log;
 use App\Mail\ProjectErrorMail;
 use App\Mail\ProjectNoErrorMail;
 use App\Project;
@@ -182,6 +183,36 @@ class ProjectService
             if ($request_data['error_message'] != $latest_status) {
                 Mail::to('receiver@receiver.com')->send(new ProjectErrorMail($project, $request_data));
             }
+        }
+    }
+
+    /**
+     * @param $projects
+     * @param $quantity
+     */
+    public function checkProjectsAndSendEmails($projects, $quantity)
+    {
+        foreach ($projects as $project) {
+            $request_data = $this->tryToGetRequestData($project);
+            $project_latest_log_data = $this->getProjectLatestLogData($project);
+            $latest_status = $this->getProjectLatestLogStatusOrError($project_latest_log_data);
+            $json = json_encode($request_data);
+
+            Log::create([
+                'project_id' => $project->id,
+                'data' => $json,
+            ]);
+
+            $this->project->update([
+                'last_check' => Carbon::now()->addHours(3),
+                'checked' => 1,
+            ], $project->id);
+
+            $this->sendEmailIfStatusChange($request_data, $project, $latest_status);
+        }
+
+        if (count($this->getProjectsForCheck($quantity)) == 0) {
+            $this->resetChecked();
         }
     }
 }

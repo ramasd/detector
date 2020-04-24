@@ -109,30 +109,11 @@ class ProjectController extends Controller
         $quantity = config('project.settings.quantity');
         $projects = $this->projectService->getProjectsForCheck($quantity);
 
-        foreach ($projects as $project) {
-            $request_data = $this->projectService->tryToGetRequestData($project);
-            $project_latest_log_data = $this->projectService->getProjectLatestLogData($project);
-            $latest_status = $this->projectService->getProjectLatestLogStatusOrError($project_latest_log_data);
-            $json = json_encode($request_data);
-
-            Log::create([
-                'project_id' => $project->id,
-                'data' => $json,
-            ]);
-
-            $this->projectService->update([
-                'last_check' => Carbon::now()->addHours(3),
-                'checked' => 1,
-            ], $project->id);
-
-            $this->projectService->sendEmailIfStatusChange($request_data, $project, $latest_status);
+        if (!count($projects)) {
+            return redirect()->route('logs.index')->with('success', 'Nothing to be check!');
         }
 
-        if (count($this->projectService->getProjectsForCheck($quantity)) == 0) {
-            $this->projectService->resetChecked();
-
-            return redirect()->route('logs.index')->with('success', 'All projects are checked!');
-        }
+        $this->projectService->checkProjectsAndSendEmails($projects, $quantity);
 
         return redirect()->route('logs.index')->with('success', 'Logs created successfully!');
     }
