@@ -3,10 +3,16 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\ProjectController;
+use App\Services\Interfaces\ProjectServiceInterface;
 use Illuminate\Console\Command;
 
 class CheckProjects extends Command
 {
+    /**
+     * @var ProjectServiceInterface
+     */
+    protected $projectServiceInterface;
+
     /**
      * The name and signature of the console command.
      *
@@ -22,13 +28,13 @@ class CheckProjects extends Command
     protected $description = 'Checks projects URLs and store data to "logs" table';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
+     * CheckProjects constructor.
+     * @param ProjectServiceInterface $projectServiceInterface
      */
-    public function __construct()
+    public function __construct(ProjectServiceInterface $projectServiceInterface)
     {
         parent::__construct();
+        $this->projectServiceInterface = $projectServiceInterface;
     }
 
     /**
@@ -38,7 +44,7 @@ class CheckProjects extends Command
      */
     public function handle()
     {
-        $controller = new ProjectController();
+        $controller = new ProjectController($this->projectServiceInterface);
         $controller->checkProjects();
     }
 }
