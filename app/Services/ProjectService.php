@@ -204,7 +204,7 @@ class ProjectService
             ]);
 
             $this->project->update([
-                'last_check' => Carbon::now()->addHours(3),
+                'last_check' => Carbon::now(),
                 'checked' => 1,
             ], $project->id);
 
