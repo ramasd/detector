@@ -2,22 +2,24 @@
 
 namespace App\Services;
 
+use App\Repositories\Interfaces\LogRepositoryInterface;
 use App\Repositories\LogRepository;
+use App\Services\Interfaces\LogServiceInterface;
 
-class LogService
+class LogService implements LogServiceInterface
 {
     /**
      * @var LogRepository
      */
-    protected $log;
+    protected $logRepository;
 
     /**
      * LogService constructor.
-     * @param LogRepository $log
+     * @param LogRepositoryInterface $logRepositoryInterface
      */
-    public function __construct(LogRepository $log)
+    public function __construct(LogRepositoryInterface $logRepositoryInterface)
     {
-        $this->log = $log;
+        $this->logRepository = $logRepositoryInterface;
     }
 
     /**
@@ -25,7 +27,7 @@ class LogService
      */
     public function index()
     {
-        return $this->log->all()->sortDesc();
+        return $this->logRepository->all()->sortDesc();
     }
 
     /**
@@ -35,7 +37,7 @@ class LogService
      */
     public function update(array $attributes, int $id)
     {
-        return $this->log->update($attributes, $id);
+        return $this->logRepository->update($attributes, $id);
     }
 
     /**
@@ -44,6 +46,6 @@ class LogService
      */
     public function delete(int $id)
     {
-        return $this->log->delete($id);
+        return $this->logRepository->delete($id);
     }
 }

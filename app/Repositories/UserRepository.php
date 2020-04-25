@@ -2,9 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\User;
 
-class UserRepository
+class UserRepository implements UserRepositoryInterface
 {
     /**
      * @var User

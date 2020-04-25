@@ -5,23 +5,22 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateLogRequest;
 use App\Log;
 use App\Project;
-use App\Services\LogService;
-use Illuminate\Http\Request;
+use App\Services\Interfaces\LogServiceInterface;
 
 class LogController extends Controller
 {
     /**
-     * @var LogService
+     * @var LogServiceInterface
      */
     protected $logService;
 
     /**
      * LogController constructor.
-     * @param LogService $logService
+     * @param LogServiceInterface $logServiceInterface
      */
-    public function __construct(LogService $logService)
+    public function __construct(LogServiceInterface $logServiceInterface)
     {
-        $this->logService = $logService;
+        $this->logService = $logServiceInterface;
     }
 
     /**
@@ -32,38 +31,6 @@ class LogController extends Controller
         $logs = $this->logService->index();
 
         return view('logs.index', compact('logs'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**

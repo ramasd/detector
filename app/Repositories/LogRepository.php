@@ -3,8 +3,9 @@
 namespace App\Repositories;
 
 use App\Log;
+use App\Repositories\Interfaces\LogRepositoryInterface;
 
-class LogRepository
+class LogRepository implements LogRepositoryInterface
 {
     /**
      * @var Log

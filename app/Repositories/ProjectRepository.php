@@ -3,8 +3,9 @@
 namespace App\Repositories;
 
 use App\Project;
+use App\Repositories\Interfaces\ProjectRepositoryInterface;
 
-class ProjectRepository
+class ProjectRepository implements ProjectRepositoryInterface
 {
     /**
      * @var Project

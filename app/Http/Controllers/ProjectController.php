@@ -4,24 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
-use App\Log;
-use App\Services\ProjectService;
-use Carbon\Carbon;
+use App\Services\Interfaces\ProjectServiceInterface;
 
 class ProjectController extends Controller
 {
     /**
-     * @var ProjectService
+     * @var ProjectServiceInterface
      */
     protected $projectService;
 
     /**
      * ProjectController constructor.
-     * @param ProjectService $projectService
+     * @param ProjectServiceInterface $projectServiceInterface
      */
-    public function __construct(ProjectService $projectService)
+    public function __construct(ProjectServiceInterface $projectServiceInterface)
     {
-        $this->projectService = $projectService;
+        $this->projectService = $projectServiceInterface;
     }
 
     /**

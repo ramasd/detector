@@ -4,23 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Services\UserService;
+use App\Services\Interfaces\UserServiceInterface;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     /**
-     * @var UserService
+     * @var UserServiceInterface
      */
     protected $userService;
 
     /**
      * UserController constructor.
-     * @param UserService $userService
+     * @param UserServiceInterface $userServiceInterface
      */
-    public function __construct(UserService $userService)
+    public function __construct(UserServiceInterface $userServiceInterface)
     {
-        $this->userService = $userService;
+        $this->userService = $userServiceInterface;
     }
 
     /**

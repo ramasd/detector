@@ -6,25 +6,27 @@ use App\Log;
 use App\Mail\ProjectErrorMail;
 use App\Mail\ProjectNoErrorMail;
 use App\Project;
+use App\Repositories\Interfaces\ProjectRepositoryInterface;
 use App\Repositories\ProjectRepository;
+use App\Services\Interfaces\ProjectServiceInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 
-class ProjectService
+class ProjectService implements ProjectServiceInterface
 {
     /**
      * @var ProjectRepository
      */
-    protected $project;
+    protected $projectRepository;
 
     /**
      * ProjectService constructor.
-     * @param ProjectRepository $project
+     * @param ProjectRepositoryInterface $projectRepositoryInterface
      */
-    public function __construct(ProjectRepository $project)
+    public function __construct(ProjectRepositoryInterface $projectRepositoryInterface)
     {
-        $this->project = $project;
+        $this->projectRepository = $projectRepositoryInterface;
     }
 
     /**
@@ -32,7 +34,7 @@ class ProjectService
      */
     public function index()
     {
-        return $this->project->all()->sortDesc();
+        return $this->projectRepository->all()->sortDesc();
     }
 
     /**
@@ -44,7 +46,7 @@ class ProjectService
         $attributes['user_id'] = auth()->id();
         $attributes['last_check'] = Carbon::now();
 
-        return $this->project->create($attributes);
+        return $this->projectRepository->create($attributes);
     }
 
     /**
@@ -53,7 +55,7 @@ class ProjectService
      */
     public function findProjectById(int $id)
     {
-        return $this->project->findOrFail($id);
+        return $this->projectRepository->findOrFail($id);
     }
 
     /**
@@ -63,7 +65,7 @@ class ProjectService
      */
     public function update(array $attributes, int $id)
     {
-        return $this->project->update($attributes, $id);
+        return $this->projectRepository->update($attributes, $id);
     }
 
     /**
@@ -72,7 +74,7 @@ class ProjectService
      */
     public function delete(int $id)
     {
-        return $this->project->delete($id);
+        return $this->projectRepository->delete($id);
     }
 
     /**
@@ -81,7 +83,7 @@ class ProjectService
      */
     public function getProjectsForCheck(int $quantity)
     {
-        return $this->project->getProjectsForCheck($quantity);
+        return $this->projectRepository->getProjectsForCheck($quantity);
     }
 
     /**
@@ -130,7 +132,7 @@ class ProjectService
     {
         $project_latest_log_data = [];
 
-        if ($this->project->projectHasLog($project)) {
+        if ($this->projectRepository->projectHasLog($project)) {
             $latest_data = $project->logs()->latest('created_at')->firstOrFail()->data;
             $project_latest_log_data = json_decode($latest_data, true);
         }
@@ -203,7 +205,7 @@ class ProjectService
                 'data' => $json,
             ]);
 
-            $this->project->update([
+            $this->projectRepository->update([
                 'last_check' => Carbon::now(),
                 'checked' => 1,
             ], $project->id);

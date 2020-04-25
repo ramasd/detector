@@ -2,22 +2,24 @@
 
 namespace App\Services;
 
+use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\UserRepository;
+use App\Services\Interfaces\UserServiceInterface;
 
-class UserService
+class UserService implements UserServiceInterface
 {
     /**
      * @var UserRepository
      */
-    protected $user;
+    protected $userRepository;
 
     /**
      * UserService constructor.
-     * @param UserRepository $user
+     * @param UserRepositoryInterface $userRepositoryInterface
      */
-    public function __construct(UserRepository $user)
+    public function __construct(UserRepositoryInterface $userRepositoryInterface)
     {
-        $this->user = $user;
+        $this->userRepository = $userRepositoryInterface;
     }
 
     /**
@@ -25,7 +27,7 @@ class UserService
      */
     public function index()
     {
-        return $this->user->all()->sortDesc();
+        return $this->userRepository->all()->sortDesc();
     }
 
     /**
@@ -34,7 +36,7 @@ class UserService
      */
     public function store(array $attributes)
     {
-        return $this->user->create($attributes);
+        return $this->userRepository->create($attributes);
     }
 
     /**
@@ -43,7 +45,7 @@ class UserService
      */
     public function findUserById(int $id)
     {
-        return $this->user->findOrFail($id);
+        return $this->userRepository->findOrFail($id);
     }
 
     /**
@@ -53,7 +55,7 @@ class UserService
      */
     public function update(array $attributes, int $id)
     {
-        return $this->user->update($attributes, $id);
+        return $this->userRepository->update($attributes, $id);
     }
 
     /**
@@ -62,6 +64,6 @@ class UserService
      */
     public function delete(int $id)
     {
-        return $this->user->delete($id);
+        return $this->userRepository->delete($id);
     }
 }
