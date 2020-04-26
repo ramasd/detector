@@ -34,7 +34,7 @@ class ProjectService implements ProjectServiceInterface
      */
     public function index()
     {
-        return $this->projectRepository->all()->sortDesc();
+        return $this->projectRepository->getCurrentUserProjects()->sortDesc();
     }
 
     /**

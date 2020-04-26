@@ -85,4 +85,13 @@ class Project extends Model
     {
         return $scope->whereRaw('check_frequency <= TIMESTAMPDIFF(MINUTE, last_check, NOW())');
     }
+
+    /**
+     * @param $scope
+     * @return mixed
+     */
+    public function scopeCurrentUserProjects($scope)
+    {
+        return $scope->where('user_id', auth()->id());
+    }
 }

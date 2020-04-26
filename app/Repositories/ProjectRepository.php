@@ -83,4 +83,12 @@ class ProjectRepository implements ProjectRepositoryInterface
     {
         return $project->logs()->exists();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCurrentUserProjects()
+    {
+        return $this->project->CurrentUserProjects()->get();
+    }
 }
