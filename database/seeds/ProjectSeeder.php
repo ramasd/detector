@@ -32,7 +32,7 @@ class ProjectSeeder extends Seeder
         foreach (range(1,3) as $index) {
             DB::table('projects')->insert([
                 'name' => Str::random(10),
-                'url' => 'https://www.' . Str::random(10) . '.com',
+                'url' => 'https://www.' . strtolower(Str::random(10)) . '.com',
                 'status' => 1,
                 'user_id' => $faker->randomElement($usersIds),
                 'check_frequency' => 20,
