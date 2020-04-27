@@ -28,7 +28,7 @@ interface ProjectServiceInterface
      * @param int $id
      * @return mixed
      */
-    public function update(array $attributes, int $id);
+    public function updateProject(array $attributes, int $id);
 
     /**
      * @param int $id
@@ -69,7 +69,7 @@ interface ProjectServiceInterface
     /**
      *
      */
-    public function resetChecked();
+    public function resetProjectsChecked();
 
     /**
      * @param array $request_data

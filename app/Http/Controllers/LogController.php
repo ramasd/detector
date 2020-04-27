@@ -37,9 +37,11 @@ class LogController extends Controller
      * @param $id
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(Log $log)
     {
-        $log = Log::findOrFail($id);
+        $this->authorize('edit', $log);
+
+        $log = Log::findOrFail($log->id);
         $projects = Project::all();
 
         return view('logs.edit', compact('log', 'projects'));
@@ -50,21 +52,26 @@ class LogController extends Controller
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(UpdateLogRequest $request, $id)
+    public function update(UpdateLogRequest $request, Log $log)
     {
+        $this->authorize('update', $log);
+
         $attributes = $request->all();
-        $this->logService->update($attributes, $id);
+        $this->logService->update($attributes, $log->id);
 
         return redirect()->route('logs.index')->with('success', 'Log has been updated successfully!');
     }
 
     /**
-     * @param $id
+     * @param Log $log
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy($id)
+    public function destroy(Log $log)
     {
-        $this->logService->delete($id);
+        $this->authorize('delete', $log);
+
+        $this->logService->delete($log->id);
 
         return redirect()->route('logs.index')->with('success', 'Log has been deleted successfully!');
     }

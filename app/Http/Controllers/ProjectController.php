@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use App\Project;
 use App\Services\Interfaces\ProjectServiceInterface;
 
 class ProjectController extends Controller
@@ -23,7 +24,7 @@ class ProjectController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
@@ -33,7 +34,7 @@ class ProjectController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create()
     {
@@ -53,48 +54,60 @@ class ProjectController extends Controller
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Project $project
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function show($id)
+    public function show(Project $project)
     {
-        $project = $this->projectService->findProjectById($id);
+        $this->authorize('show', $project);
+
+        $project = $this->projectService->findProjectById($project->id);
 
         return view('projects.show', compact('project'));
     }
 
     /**
-     * @param $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @param Project $project
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit($id)
+    public function edit(Project $project)
     {
-        $project = $this->projectService->findProjectById($id);
+        $this->authorize('edit', $project);
+
+        $project = $this->projectService->findProjectById($project->id);
 
         return view('projects.edit', compact('project'));
     }
 
     /**
      * @param UpdateProjectRequest $request
-     * @param $id
+     * @param Project $project
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(UpdateProjectRequest $request, $id)
+    public function update(UpdateProjectRequest $request, Project $project)
     {
+        $this->authorize('update', $project);
+
         $attributes = $request->all();
         $attributes['status'] = $request->status;
-        $this->projectService->update($attributes, $id);
+        $this->projectService->updateProject($attributes, $project->id);
 
         return redirect()->route('projects.index')->with('success', 'Project has been updated successfully!');
     }
 
     /**
-     * @param $id
+     * @param Project $project
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy($id)
+    public function destroy(Project $project)
     {
-        $this->projectService->delete($id);
+        $this->authorize('delete', $project);
+
+        $this->projectService->delete($project->id);
 
         return redirect()->route('projects.index')->with('success', 'Project has been deleted successfully!');
     }

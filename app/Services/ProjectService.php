@@ -63,7 +63,7 @@ class ProjectService implements ProjectServiceInterface
      * @param int $id
      * @return mixed
      */
-    public function update(array $attributes, int $id)
+    public function updateProject(array $attributes, int $id)
     {
         return $this->projectRepository->update($attributes, $id);
     }
@@ -161,7 +161,7 @@ class ProjectService implements ProjectServiceInterface
     /**
      *
      */
-    public function resetChecked()
+    public function resetProjectsChecked()
     {
         Project::query()->update(['checked' => null]);
     }
@@ -212,9 +212,8 @@ class ProjectService implements ProjectServiceInterface
 
             $this->sendEmailIfStatusChange($request_data, $project, $latest_status);
         }
-
         if (count($this->getProjectsForCheck($quantity)) == 0) {
-            $this->resetChecked();
+            $this->resetProjectsChecked();
         }
     }
 }

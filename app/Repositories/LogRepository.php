@@ -47,4 +47,9 @@ class LogRepository implements LogRepositoryInterface
     {
         return $this->log->findOrFail($id)->delete();
     }
+
+    public function getCurrentUserLogs()
+    {
+        return $this->log->CurrentUserlogs()->get();
+    }
 }

@@ -32,4 +32,12 @@ class Log extends Model
     {
         return $this->belongsTo(Project::class);
     }
+
+    // Scopes
+
+    public function scopeCurrentUserLogs($scope)
+    {
+//        SELECT * FROM logs WHERE project_id IN (SELECT id FROM projects WHERE user_id = auth()->id())
+//        return $scope->whereIn('project_id', User::findOrFail(auth()->id())->projects);
+    }
 }

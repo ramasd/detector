@@ -27,7 +27,7 @@ class LogService implements LogServiceInterface
      */
     public function index()
     {
-        return $this->logRepository->all()->sortDesc();
+        return $this->logRepository->getCurrentUserLogs()->sortDesc();
     }
 
     /**
