@@ -111,7 +111,7 @@ class ProjectController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function checkProjects()
     {

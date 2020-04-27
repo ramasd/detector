@@ -69,4 +69,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Project::class);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function logs()
+    {
+        return $this->hasMany(Log::class);
+    }
 }

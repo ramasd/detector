@@ -20,7 +20,7 @@ class Log extends Model
      * @var array
      */
     protected $fillable = [
-        'project_id', 'data',
+        'project_id', 'user_id', 'data',
     ];
 
     // Relationships
@@ -33,11 +33,15 @@ class Log extends Model
         return $this->belongsTo(Project::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     // Scopes
 
     public function scopeCurrentUserLogs($scope)
     {
-//        SELECT * FROM logs WHERE project_id IN (SELECT id FROM projects WHERE user_id = auth()->id())
-//        return $scope->whereIn('project_id', User::findOrFail(auth()->id())->projects);
+        return $scope->where('user_id', auth()->id());
     }
 }

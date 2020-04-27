@@ -4,6 +4,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 use App\Project;
+use App\User;
 
 class LogSeeder extends Seeder
 {
@@ -16,6 +17,7 @@ class LogSeeder extends Seeder
     {
         $faker = Faker\Factory::create();
         $projectsIds = Project::all()->pluck('id')->toArray();
+        $usersIds = User::all()->pluck('id')->toArray();
 
         foreach (range(1,5) as $index) {
             $load_time = $randomFloat = rand(1, 300) / 100;
@@ -24,6 +26,7 @@ class LogSeeder extends Seeder
 
             DB::table('logs')->insert([
                 'project_id' => $faker->randomElement($projectsIds),
+                'user_id' => $faker->randomElement($usersIds),
                 'data' => '{"status":200,"load_time":'.$load_time.',"server_ip":"'.$server_ip.'","redirect_detected":'.$redirect_detected.'}',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),

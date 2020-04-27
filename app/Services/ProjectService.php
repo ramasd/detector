@@ -202,6 +202,7 @@ class ProjectService implements ProjectServiceInterface
 
             Log::create([
                 'project_id' => $project->id,
+                'user_id' => $project->user_id,
                 'data' => $json,
             ]);
 
