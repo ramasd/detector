@@ -119,11 +119,11 @@ class ProjectController extends Controller
         $projects = $this->projectService->getProjectsForCheck($quantity);
 
         if (!count($projects)) {
-            return redirect()->route('logs.index')->with('success', 'Nothing to be check!');
+            return response('Nothing to be check!');
         }
 
         $this->projectService->checkProjectsAndSendEmails($projects, $quantity);
 
-        return redirect()->route('logs.index')->with('success', 'Logs created successfully!');
+        return response('Logs created successfully!');
     }
 }
