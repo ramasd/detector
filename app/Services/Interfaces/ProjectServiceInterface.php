@@ -83,4 +83,18 @@ interface ProjectServiceInterface
      * @param $quantity
      */
     public function checkProjectsAndSendEmails($projects, $quantity);
+
+    /**
+     * @param $request
+     * @param null $status
+     * @return mixed
+     */
+    public function getProjectAttributes($data, $status = null);
+
+    /**
+     * @param $project
+     * @param $data
+     * @param null $status
+     */
+    public function getAttributesAndUpdateProject($project, $data, $status = null);
 }

@@ -91,9 +91,7 @@ class ProjectController extends Controller
     {
         $this->authorize('update', $project);
 
-        $attributes = $request->all();
-        $attributes['status'] = $request->status;
-        $this->projectService->updateProject($attributes, $project->id);
+        $this->projectService->getAttributesAndUpdateProject($project, $request->all(), $request->status);
 
         return redirect()->route('projects.index')->with('success', 'Project has been updated successfully!');
     }

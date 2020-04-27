@@ -216,4 +216,28 @@ class ProjectService implements ProjectServiceInterface
             $this->resetProjectsChecked();
         }
     }
+
+    /**
+     * @param $request
+     * @param null $status
+     * @return mixed
+     */
+    public function getProjectAttributes($data, $status = null)
+    {
+        $attributes = $data;
+        $attributes['status'] = $status;
+
+        return $attributes;
+    }
+
+    /**
+     * @param $project
+     * @param $data
+     * @param null $status
+     */
+    public function getAttributesAndUpdateProject($project, $data, $status = null)
+    {
+        $attributes = $this->getProjectAttributes($data, $status);
+        $this->updateProject($attributes, $project->id);
+    }
 }
