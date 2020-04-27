@@ -27,7 +27,7 @@ class LogPolicy
      */
     public function edit(User $user, Log $log)
     {
-        return $user->id === $log->project->user->id;
+        return $user->id === $log->user_id;
     }
 
     /**
@@ -39,7 +39,7 @@ class LogPolicy
      */
     public function update(User $user, Log $log)
     {
-        return $user->id === $log->project->user->id;
+        return $user->id === $log->user_id;
     }
 
     /**
@@ -51,6 +51,6 @@ class LogPolicy
      */
     public function delete(User $user, Log $log)
     {
-        return $user->id === $log->project->user->id;
+        return $user->id === $log->user_id;
     }
 }
