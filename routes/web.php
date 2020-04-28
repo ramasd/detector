@@ -30,4 +30,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('projects', 'ProjectController');
     Route::resource('logs', 'LogController');
     Route::get('check', 'ProjectController@checkProjects')->name('projects.check');
+    Route::get('users/loginas/{id}', 'UserController@loginAs')->name('users.loginAs');
 });
+
+

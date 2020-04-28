@@ -43,6 +43,10 @@
                             @csrf
                             <input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure?')" />
                         </form>
+
+                        @if($user->id !== auth()->id())
+                            <a class="btn btn-warning" href="{{ route('users.loginAs', $user->id) }}">Login As</a>
+                        @endif
                     </td>
                 </tr>
             @empty

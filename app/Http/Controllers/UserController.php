@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Services\Interfaces\UserServiceInterface;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
 
 class UserController extends Controller
 {
@@ -106,5 +108,16 @@ class UserController extends Controller
         $this->userService->delete($id);
 
         return redirect()->route('users.index')->with('success', 'User has been deleted successfully!');
+    }
+
+    /**
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function loginAs($id)
+    {
+        Auth::loginUsingId($id);
+
+        return Redirect::home();
     }
 }
