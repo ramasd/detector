@@ -3,6 +3,7 @@
 namespace App\Services\Interfaces;
 
 use App\Project;
+use Carbon\Carbon;
 
 interface ProjectServiceInterface
 {
@@ -97,4 +98,15 @@ interface ProjectServiceInterface
      * @param null $status
      */
     public function getAttributesAndUpdateProject($project, $data, $status = null);
+
+    /**
+     * @return Carbon
+     */
+    public function getSessionStartTime();
+
+    /**
+     * @param $sessionStartTime
+     * @return mixed
+     */
+    public function getSessionTotalDuration($sessionStartTime);
 }

@@ -6,6 +6,7 @@ use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Project;
 use App\Services\Interfaces\ProjectServiceInterface;
+use Illuminate\Support\Facades\Log;
 
 class ProjectController extends Controller
 {
@@ -115,15 +116,20 @@ class ProjectController extends Controller
      */
     public function checkProjects()
     {
+        // Getting session start time
+        $startTime = $this->projectService->getSessionStartTime();
+
         $quantity = config('project.settings.quantity');
         $projects = $this->projectService->getProjectsForCheck($quantity);
 
-        if (!count($projects)) {
-            return response('Nothing to be check!');
-        }
-
         $this->projectService->checkProjectsAndSendEmails($projects, $quantity);
 
-        return response('Logs created successfully!');
+        // Getting session duration time
+        $totalDuration  = $this->projectService->getSessionTotalDuration($startTime);
+
+        Log::info('Number of projects per session: ' . count($projects));
+        Log::info('Session duration time: ' . $totalDuration);
+
+        return response('Projects checked successfully!');
     }
 }

@@ -241,4 +241,21 @@ class ProjectService implements ProjectServiceInterface
         $attributes = $this->getProjectAttributes($data, $status);
         $this->updateProject($attributes, $project->id);
     }
+
+    /**
+     * @return Carbon
+     */
+    public function getSessionStartTime()
+    {
+        return Carbon::now();
+    }
+
+    /**
+     * @param $sessionStartTime
+     * @return mixed
+     */
+    public function getSessionTotalDuration($sessionStartTime)
+    {
+        return $sessionStartTime->diffInMilliseconds(Carbon::now());
+    }
 }
