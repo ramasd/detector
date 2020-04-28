@@ -19,7 +19,7 @@ class LogSeeder extends Seeder
         $projectsIds = Project::all()->pluck('id')->toArray();
         $usersIds = User::all()->pluck('id')->toArray();
 
-        foreach (range(1,5) as $index) {
+        foreach (range(1,3) as $index) {
             $load_time = $randomFloat = rand(1, 300) / 100;
             $server_ip = long2ip(rand(0, "4294967295"));
             $redirect_detected = rand(0,1);

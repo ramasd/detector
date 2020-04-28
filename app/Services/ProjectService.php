@@ -44,7 +44,6 @@ class ProjectService implements ProjectServiceInterface
     public function store(array $attributes)
     {
         $attributes['user_id'] = auth()->id();
-        $attributes['last_check'] = Carbon::now();
 
         return $this->projectRepository->create($attributes);
     }

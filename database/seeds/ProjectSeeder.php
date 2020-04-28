@@ -23,8 +23,8 @@ class ProjectSeeder extends Seeder
             'url' => 'https://www.google.com',
             'status' => 1,
             'user_id' => $faker->randomElement($usersIds),
-            'check_frequency' => 20,
-            'last_check' => Carbon::now(),
+            'check_frequency' => 1,
+            'last_check' => null,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
@@ -35,8 +35,8 @@ class ProjectSeeder extends Seeder
                 'url' => 'https://www.' . strtolower(Str::random(10)) . '.com',
                 'status' => 1,
                 'user_id' => $faker->randomElement($usersIds),
-                'check_frequency' => 20,
-                'last_check' => Carbon::now(),
+                'check_frequency' => rand(1, 3),
+                'last_check' => null,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);

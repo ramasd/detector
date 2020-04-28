@@ -20,7 +20,7 @@ class CreateProjectsTable extends Migration
             $table->tinyInteger('status')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->unsignedInteger('check_frequency');
-            $table->dateTime('last_check');
+            $table->dateTime('last_check')->nullable();
             $table->tinyInteger('checked')->nullable();
             $table->timestamps();
             $table->softDeletes();
