@@ -21,6 +21,7 @@ class ProjectController extends Controller
      */
     public function __construct(ProjectServiceInterface $projectServiceInterface)
     {
+        $this->middleware('role:admin', ['only' => ['checkProjects']]);
         $this->projectService = $projectServiceInterface;
     }
 

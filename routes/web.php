@@ -14,7 +14,10 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', 'ProjectController@index')->name('home');
+//Route::get('/', 'ProjectController@index')->name('home');
+Route::get('/', function() {
+    return view('main');
+})->name('home');
 
 Auth::routes([
     'register' => false,

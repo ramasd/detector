@@ -15,8 +15,10 @@
         @auth()
             <a href="{{ route('projects.create') }}" class="btn btn-primary">New Project</a>
             <br /><br />
-            <a href="{{ route('projects.check') }}" class="btn btn-primary">Check Projects</a>
-            <br /><br />
+            @role('admin')
+                <a href="{{ route('projects.check') }}" class="btn btn-success">Check Projects</a>
+                <br /><br />
+            @endrole
         @endauth
 
         <table class="table">
