@@ -27,9 +27,6 @@
         <main class="py-4">
             @yield('content')
         </main>
-
-        <!-- Footer -->
-        @include('includes.footer')
     </div>
 </body>
 </html>

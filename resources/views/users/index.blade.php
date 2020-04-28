@@ -45,7 +45,7 @@
                         </form>
 
                         @if($user->id !== auth()->id())
-                            <a class="btn btn-warning" href="{{ route('users.loginAs', $user->id) }}">Login As</a>
+                            <a class="btn btn-warning" href="{{ route('users.loginAs', $user->id) }}">Login to user</a>
                         @endif
                     </td>
                 </tr>
