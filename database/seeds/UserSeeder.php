@@ -19,13 +19,23 @@ class UserSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@admin.com',
             'status' => 1,
-            'comment' => 'comment',
+            'comment' => 'Admin comment',
             'password' => Hash::make('password'),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
 
-        foreach (range(1,4) as $index) {
+        DB::table('users')->insert([
+            'name' => 'User',
+            'email' => 'user@user.com',
+            'status' => 1,
+            'comment' => 'User comment',
+            'password' => Hash::make('password'),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        foreach (range(1,2) as $index) {
             DB::table('users')->insert([
                 'name' => Str::random(10),
                 'email' => Str::random(10) . '@test.com',

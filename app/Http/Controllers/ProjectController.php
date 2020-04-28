@@ -128,7 +128,7 @@ class ProjectController extends Controller
         $totalDuration  = $this->projectService->getSessionTotalDuration($startTime);
 
         Log::info('Number of projects per session: ' . count($projects));
-        Log::info('Session duration time: ' . $totalDuration);
+        Log::info('Session duration time: ' . $totalDuration . ' ms');
 
         return response('Projects checked successfully!');
     }
