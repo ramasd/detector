@@ -16,6 +16,11 @@ class ProjectController extends Controller
     protected $projectService;
 
     /**
+     * @var string
+     */
+    protected $hash = "hJ7YF4TnVR30UkR1D8PW";
+
+    /**
      * ProjectController constructor.
      * @param ProjectServiceInterface $projectServiceInterface
      */
@@ -115,8 +120,12 @@ class ProjectController extends Controller
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
-    public function checkProjects()
+    public function checkProjects($hash)
     {
+        if(!$hash || $hash != $this->hash){
+            abort(403);
+        }
+
         // Getting session start time
         $startTime = $this->projectService->getSessionStartTime();
 

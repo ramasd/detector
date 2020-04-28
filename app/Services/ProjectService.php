@@ -144,7 +144,7 @@ class ProjectService implements ProjectServiceInterface
      * @param array $project_latest_log_data
      * @return mixed|null
      */
-    public function getProjectLatestLogStatusOrError(array $project_latest_log_data)
+    public function getProjectLatestLogStatusOrError($project_latest_log_data)
     {
         $latest_status = null;
 

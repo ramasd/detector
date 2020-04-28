@@ -16,7 +16,7 @@
             <a href="{{ route('projects.create') }}" class="btn btn-primary">New Project</a>
             <br /><br />
             @role('admin')
-                <a href="{{ route('projects.check') }}" class="btn btn-success">Check Projects</a>
+                <a href="{{ route('projects.check', 'hJ7YF4TnVR30UkR1D8PW') }}" class="btn btn-success">Check Projects</a>
                 <br /><br />
             @endrole
         @endauth

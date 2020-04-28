@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-//Route::get('/', 'ProjectController@index')->name('home');
 Route::get('/', function() {
     return view('main');
 })->name('home');
@@ -29,8 +28,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('users', 'UserController');
     Route::resource('projects', 'ProjectController');
     Route::resource('logs', 'LogController');
-    Route::get('check', 'ProjectController@checkProjects')->name('projects.check');
     Route::get('users/loginas/{id}', 'UserController@loginAs')->name('users.loginAs');
 });
 
+Route::get('projects/check/{hash}', 'ProjectController@checkProjects')->name('projects.check');
 
