@@ -23,4 +23,15 @@ interface LogRepositoryInterface
      * @return mixed
      */
     public function delete(int $id);
+
+    /**
+     * @return mixed
+     */
+    public function getCurrentUserLogs();
+
+    /**
+     * @param $data
+     * @return mixed
+     */
+    public function jsonToArr($data);
 }

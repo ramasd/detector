@@ -29,6 +29,7 @@ class LogController extends Controller
     public function index()
     {
         $logs = $this->logService->index();
+        $this->logService->logsDataFromJsonToArr($logs);
 
         return view('logs.index', compact('logs'));
     }

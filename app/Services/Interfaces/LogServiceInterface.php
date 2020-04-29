@@ -21,4 +21,15 @@ interface LogServiceInterface
      * @return mixed
      */
     public function delete(int $id);
+
+    /**
+     * @param $log
+     * @return mixed
+     */
+    public function logDataFromJsonToArr($log);
+
+    /**
+     * @param $logs
+     */
+    public function logsDataFromJsonToArr($logs);
 }

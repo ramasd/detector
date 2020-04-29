@@ -48,4 +48,23 @@ class LogService implements LogServiceInterface
     {
         return $this->logRepository->delete($id);
     }
+
+    /**
+     * @param $log
+     * @return mixed
+     */
+    public function logDataFromJsonToArr($log)
+    {
+        return $this->logRepository->jsonToArr($log->data);
+    }
+
+    /**
+     * @param $logs
+     */
+    public function logsDataFromJsonToArr($logs)
+    {
+        foreach ($logs as $key => $log) {
+            $logs[$key]['data'] = $this->logDataFromJsonToArr($log);
+        }
+    }
 }

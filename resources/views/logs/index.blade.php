@@ -28,7 +28,19 @@
                 <tr>
                     <td>{{ $log->id }}</td>
                     <td><a href="{{ route('projects.show', $log->project_id) }}">{{ $log->project->name }}</a></td>
-                    <td>{{ $log->data }}</td>
+                    <td>
+                        @foreach($log->data as $key => $value)
+                            <b>{{ $key }}</b> =
+                            @if ($value === true)
+                                {{ "true" }}
+                            @elseif ($value === false)
+                                {{ "false" }}
+                            @else
+                                {{ $value }}
+                            @endif
+                            <br />
+                        @endforeach
+                    </td>
                     <td>{{ $log->created_at }}</td>
                     <td>
                         <a class="btn btn-primary" href="{{ route('logs.edit', $log->id) }}">Edit</a>

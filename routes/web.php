@@ -32,4 +32,3 @@ Route::group(['middleware' => 'auth'], function() {
 });
 
 Route::get('projects/check/{hash}', 'ProjectController@checkProjects')->name('projects.check');
-
