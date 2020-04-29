@@ -14,9 +14,7 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', function() {
-    return view('main');
-})->name('home');
+Route::get('/', 'ProjectController@index')->name('home');
 
 Auth::routes([
     'register' => false,
@@ -32,3 +30,5 @@ Route::group(['middleware' => 'auth'], function() {
 });
 
 Route::get('projects/check/{hash}', 'ProjectController@checkProjects')->name('projects.check');
+
+Route::get('logout', 'Auth\LoginController@logout');
