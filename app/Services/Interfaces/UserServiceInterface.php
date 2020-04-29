@@ -5,9 +5,10 @@ namespace App\Services\Interfaces;
 interface UserServiceInterface
 {
     /**
-     * @return \App\User[]|\Illuminate\Database\Eloquent\Collection
+     * @param int $recordsPerPage
+     * @return \App\User[]|\Illuminate\Database\Eloquent\Collection|mixed
      */
-    public function index();
+    public function index($recordsPerPage = 50);
 
     /**
      * @param array $attributes

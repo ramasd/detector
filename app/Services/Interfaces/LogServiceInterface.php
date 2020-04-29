@@ -5,9 +5,10 @@ namespace App\Services\Interfaces;
 interface LogServiceInterface
 {
     /**
+     * @param int $recordsPerPage
      * @return mixed
      */
-    public function index();
+    public function index($recordsPerPage = 50);
 
     /**
      * @param array $attributes
@@ -32,4 +33,10 @@ interface LogServiceInterface
      * @param $logs
      */
     public function logsDataFromJsonToArr($logs);
+
+    /**
+     * @param int $id
+     * @return mixed
+     */
+    public function findLogById(int $id);
 }

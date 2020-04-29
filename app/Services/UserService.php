@@ -23,11 +23,12 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * @return \App\User[]|\Illuminate\Database\Eloquent\Collection
+     * @param int $recordsPerPage
+     * @return \App\User[]|\Illuminate\Database\Eloquent\Collection|mixed
      */
-    public function index()
+    public function index($recordsPerPage = 50)
     {
-        return $this->userRepository->all()->sortDesc();
+        return $this->userRepository->paginateUser($recordsPerPage);
     }
 
     /**

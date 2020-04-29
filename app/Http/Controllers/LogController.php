@@ -20,6 +20,7 @@ class LogController extends Controller
      */
     public function __construct(LogServiceInterface $logServiceInterface)
     {
+        $this->middleware('auth');
         $this->logService = $logServiceInterface;
     }
 
@@ -34,9 +35,18 @@ class LogController extends Controller
         return view('logs.index', compact('logs'));
     }
 
+    public function show(int $id)
+    {
+        $log = $this->logService->findLogById($id);
+        $this->logService->logDataFromJsonToArr($log);
+
+        return view('logs.show', compact('log'));
+    }
+
     /**
-     * @param $id
+     * @param Log $log
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Log $log)
     {
@@ -50,8 +60,9 @@ class LogController extends Controller
 
     /**
      * @param UpdateLogRequest $request
-     * @param $id
+     * @param Log $log
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(UpdateLogRequest $request, Log $log)
     {

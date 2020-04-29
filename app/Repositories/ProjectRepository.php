@@ -85,10 +85,11 @@ class ProjectRepository implements ProjectRepositoryInterface
     }
 
     /**
+     * @param int $recordsPerPage
      * @return mixed
      */
-    public function getCurrentUserProjects()
+    public function getCurrentUserProjects($recordsPerPage)
     {
-        return $this->project->CurrentUserProjects()->get();
+        return $this->project->CurrentUserProjects()->orderBy('id', 'desc')->paginate($recordsPerPage);
     }
 }

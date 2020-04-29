@@ -22,6 +22,7 @@ class UserController extends Controller
      */
     public function __construct(UserServiceInterface $userServiceInterface)
     {
+        $this->middleware('auth');
         $this->middleware('role:admin');
 
         $this->userService = $userServiceInterface;

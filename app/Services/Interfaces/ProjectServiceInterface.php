@@ -8,9 +8,10 @@ use Carbon\Carbon;
 interface ProjectServiceInterface
 {
     /**
-     * @return Project[]|\Illuminate\Database\Eloquent\Collection
+     * @param int $recordsPerPage
+     * @return Project[]|\Illuminate\Database\Eloquent\Collection|mixed
      */
-    public function index();
+    public function index($recordsPerPage = 50);
 
     /**
      * @param array $attributes

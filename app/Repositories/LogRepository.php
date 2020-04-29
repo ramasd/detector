@@ -49,11 +49,12 @@ class LogRepository implements LogRepositoryInterface
     }
 
     /**
+     * @param int $recordsPerPage
      * @return mixed
      */
-    public function getCurrentUserLogs()
+    public function getCurrentUserLogs($recordsPerPage)
     {
-        return $this->log->CurrentUserlogs()->get();
+        return $this->log->CurrentUserlogs()->orderBy('id', 'desc')->paginate($recordsPerPage);
     }
 
     /**
@@ -63,5 +64,14 @@ class LogRepository implements LogRepositoryInterface
     public function jsonToArr($data)
     {
         return json_decode($data, true);
+    }
+
+    /**
+     * @param int $id
+     * @return mixed
+     */
+    public function findOrFail(int $id)
+    {
+        return $this->log->findOrFail($id);
     }
 }

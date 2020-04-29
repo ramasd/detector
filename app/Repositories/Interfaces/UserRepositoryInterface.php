@@ -12,6 +12,12 @@ interface UserRepositoryInterface
     public function all();
 
     /**
+     * @param int $recordsPerPage
+     * @return mixed
+     */
+    public function paginateUser($recordsPerPage);
+
+    /**
      * @param array $attributes
      * @return mixed
      */

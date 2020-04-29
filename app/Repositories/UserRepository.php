@@ -30,6 +30,15 @@ class UserRepository implements UserRepositoryInterface
     }
 
     /**
+     * @param int $recordsPerPage
+     * @return mixed
+     */
+    public function paginateUser($recordsPerPage)
+    {
+        return $this->user->orderBy('id', 'desc')->paginate($recordsPerPage);
+    }
+
+    /**
      * @param array $attributes
      * @return mixed
      */

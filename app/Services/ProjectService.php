@@ -30,11 +30,12 @@ class ProjectService implements ProjectServiceInterface
     }
 
     /**
-     * @return Project[]|\Illuminate\Database\Eloquent\Collection
+     * @param int $recordsPerPage
+     * @return Project[]|\Illuminate\Database\Eloquent\Collection|mixed
      */
-    public function index()
+    public function index($recordsPerPage = 50)
     {
-        return $this->projectRepository->getCurrentUserProjects()->sortDesc();
+        return $this->projectRepository->getCurrentUserProjects($recordsPerPage);
     }
 
     /**

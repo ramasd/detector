@@ -47,4 +47,10 @@ Interface ProjectRepositoryInterface
      * @return mixed
      */
     public function projectHasLog(Project $project);
+
+    /**
+     * @param int $recordsPerPage
+     * @return mixed
+     */
+    public function getCurrentUserProjects($recordsPerPage);
 }

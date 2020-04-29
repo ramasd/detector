@@ -25,13 +25,20 @@ interface LogRepositoryInterface
     public function delete(int $id);
 
     /**
+     * @param int $recordsPerPage
      * @return mixed
      */
-    public function getCurrentUserLogs();
+    public function getCurrentUserLogs($recordsPerPage);
 
     /**
      * @param $data
      * @return mixed
      */
     public function jsonToArr($data);
+
+    /**
+     * @param int $id
+     * @return mixed
+     */
+    public function findOrFail(int $id);
 }

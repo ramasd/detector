@@ -23,11 +23,12 @@ class LogService implements LogServiceInterface
     }
 
     /**
+     * @param int $recordsPerPage
      * @return mixed
      */
-    public function index()
+    public function index($recordsPerPage = 50)
     {
-        return $this->logRepository->getCurrentUserLogs()->sortDesc();
+        return $this->logRepository->getCurrentUserLogs($recordsPerPage);
     }
 
     /**
@@ -55,7 +56,9 @@ class LogService implements LogServiceInterface
      */
     public function logDataFromJsonToArr($log)
     {
-        return $this->logRepository->jsonToArr($log->data);
+        $log['data'] = $this->logRepository->jsonToArr($log->data);
+
+        return $log;
     }
 
     /**
@@ -66,5 +69,16 @@ class LogService implements LogServiceInterface
         foreach ($logs as $key => $log) {
             $logs[$key]['data'] = $this->logDataFromJsonToArr($log);
         }
+
+        return $logs;
+    }
+
+    /**
+     * @param int $id
+     * @return mixed
+     */
+    public function findLogById(int $id)
+    {
+        return $this->logRepository->findOrFail($id);
     }
 }
