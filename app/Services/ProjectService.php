@@ -101,11 +101,22 @@ class ProjectService implements ProjectServiceInterface
             $data['load_time'] = $response->transferStats->getHandlerStat('total_time');
             $data['server_ip'] = $response->transferStats->getHandlerStat('primary_ip');
         }
-        $data['redirect_detected'] = $response->redirect();
+        $data['redirect_detected'] = $this->isRedirect($url);
         $data['server_error'] = $response->serverError();
         $data['client_error'] = $response->clientError();
 
         return $data;
+    }
+
+    /**
+     * @param $url
+     * @return bool
+     */
+    public function isRedirect($url)
+    {
+        $response = Http::withOptions(['allow_redirects' => false])->get($url);
+
+        return $response->redirect();
     }
 
     /**
