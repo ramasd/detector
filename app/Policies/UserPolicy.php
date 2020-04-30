@@ -26,7 +26,14 @@ class UserPolicy
      */
     public function show(User $current_user, User $user)
     {
-        return $current_user->id === $user->id;
+        $admin = false;
+
+        foreach ($current_user->roles as $role) {
+            if ($role->name == "admin") {
+                $admin = true;
+            }
+        }
+        return $current_user->id === $user->id OR $admin;
     }
 
     /**
