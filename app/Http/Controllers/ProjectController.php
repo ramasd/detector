@@ -119,6 +119,7 @@ class ProjectController extends Controller
     }
 
     /**
+     * @param $hash
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function checkProjects($hash)

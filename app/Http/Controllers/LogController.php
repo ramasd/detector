@@ -35,10 +35,16 @@ class LogController extends Controller
         return view('logs.index', compact('logs'));
     }
 
-    public function show(int $id)
+    /**
+     * @param Log $log
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function show(Log $log)
     {
-        $log = $this->logService->findLogById($id);
-        $this->logService->logDataFromJsonToArr($log);
+        $this->authorize('show', $log);
+        $log = $this->logService->findLogById($log->id);
+        $log['data'] = $this->logService->logDataFromJsonToArr($log);
 
         return view('logs.show', compact('log'));
     }

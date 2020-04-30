@@ -35,17 +35,19 @@
                                             <td><a href="{{ route('logs.show', $log->id) }}">{{ $log->id }}</a></td>
                                             <td><a href="{{ route('projects.show', $log->project_id) }}">{{ $log->project->name }}</a></td>
                                             <td>
-                                                @foreach($log->data as $key => $value)
-                                                    <b>{{ $key }}</b> =
-                                                    @if ($value === true)
-                                                        {{ "true" }}
-                                                    @elseif ($value === false)
-                                                        {{ "false" }}
-                                                    @else
-                                                        {{ $value }}
-                                                    @endif
-                                                    <br />
-                                                @endforeach
+                                                @if($log->data)
+                                                    @foreach($log->data as $key => $value)
+                                                        <b>{{ $key }}</b> =
+                                                        @if ($value === true)
+                                                            {{ "true" }}
+                                                        @elseif ($value === false)
+                                                            {{ "false" }}
+                                                        @else
+                                                            {{ $value }}
+                                                        @endif
+                                                        <br />
+                                                    @endforeach
+                                                @endif
                                             </td>
                                             <td>{{ $log->created_at }}</td>
                                             <td>

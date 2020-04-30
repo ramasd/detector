@@ -25,6 +25,16 @@ class LogPolicy
      * @param Log $log
      * @return bool
      */
+    public function show(User $user, Log $log)
+    {
+        return $user->id === $log->user_id;
+    }
+
+    /**
+     * @param User $user
+     * @param Log $log
+     * @return bool
+     */
     public function edit(User $user, Log $log)
     {
         return $user->id === $log->user_id;

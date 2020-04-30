@@ -52,11 +52,7 @@
                                             <td>{{ $project->name }}</td>
                                             <td><a href="{{ $project->url }}">{{ $project->url }}</a></td>
                                             <td>{{ $project->status ? "Active" : "Inactive" }}</td>
-                                            @role('admin')
                                             <td><a href="{{ route('users.show', $project->user_id) }}">{{ $project->user->name }}</a></td>
-                                            @else
-                                            <td>{{ $project->user->name }}</td>
-                                            @endrole
                                             <td>{{ $project->check_frequency }}</td>
                                             <td>{{ $project->last_check }}</td>
                                             <td>{{ $project->checked ? "Yes" : "No" }}</td>

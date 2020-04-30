@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Services\Interfaces\UserServiceInterface;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
@@ -23,7 +24,7 @@ class UserController extends Controller
     public function __construct(UserServiceInterface $userServiceInterface)
     {
         $this->middleware('auth');
-        $this->middleware('role:admin');
+        $this->middleware('role:admin', ['except' => ['show', 'edit', 'update']]);
 
         $this->userService = $userServiceInterface;
     }
@@ -60,12 +61,15 @@ class UserController extends Controller
     }
 
     /**
-     * @param int $id
+     * @param User $user
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function show(int $id)
+    public function show(User $user)
     {
-        $user = $this->userService->findUserById($id);
+        $this->authorize('show', $user);
+
+        $user = $this->userService->findUserById($user->id);
 
         return view('users.show', compact('user'));
     }
@@ -83,10 +87,10 @@ class UserController extends Controller
 
     /**
      * @param UpdateUserRequest $request
-     * @param int $id
+     * @param User $user
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(UpdateUserRequest $request, int $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
         $attributes = $request->except(['status', 'password']);
         $attributes['status'] = $request->status;
@@ -95,9 +99,9 @@ class UserController extends Controller
             $attributes['password'] = Hash::make($request->password);
         }
 
-        $this->userService->update($attributes, $id);
+        $this->userService->update($attributes, $user->id);
 
-        return redirect()->route('users.index')->with('success', 'User has been updated successfully!');
+        return redirect()->back()->with('success', 'User has been updated successfully!');
     }
 
     /**
