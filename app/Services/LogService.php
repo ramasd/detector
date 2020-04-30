@@ -56,9 +56,7 @@ class LogService implements LogServiceInterface
      */
     public function logDataFromJsonToArr($log)
     {
-        $log['data'] = $this->logRepository->jsonToArr($log->data);
-
-        return $log;
+        return $this->logRepository->jsonToArr($log->data);
     }
 
     /**
@@ -69,8 +67,6 @@ class LogService implements LogServiceInterface
         foreach ($logs as $key => $log) {
             $logs[$key]['data'] = $this->logDataFromJsonToArr($log);
         }
-
-        return $logs;
     }
 
     /**

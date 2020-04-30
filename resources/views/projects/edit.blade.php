@@ -33,9 +33,9 @@
                                     <input id="url" type="text" class="form-control @error('url') is-invalid @enderror" name="url" value="{{ old('url', $project->url) }}" required autocomplete="url">
 
                                     @error('url')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
                                     @enderror
                                 </div>
                             </div>

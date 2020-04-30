@@ -27,18 +27,23 @@
                             </div>
 
                             <div class="form-group row">
-                                <label for="data" class="col-md-4 col-form-label text-md-right">{{ __('Data') }}</label>
-
-                                <div class="col-md-6">
-                                    <input id="data" type="text" class="form-control @error('data') is-invalid @enderror" name="data" value="{{ $log->data }}" autocomplete="data">
-
-                                    @error('data')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
+                                <label for="data" class="col-md-4 col-form-label text-md-right">{{ __('Data:') }}</label>
                             </div>
+
+                            @foreach($log->data as $key => $value)
+                                  <div class="form-group row">
+                                    <label for="data" class="col-md-4 col-form-label text-md-right">{{ __($key) }}</label>
+
+                                    <div class="col-md-6">
+                                        <input id="{{ $key }}" type="text" class="form-control @error($key) is-invalid @enderror" name="{{ $key }}" value="{{ old($key, $value) }}" autocomplete="{{ $key }}">
+                                        @error($key)
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                  </div>
+                            @endforeach
 
                             <div class="form-group row mb-0">
                                 <div class="col-md-6 offset-md-4">
