@@ -41,9 +41,6 @@
                                     <td>{{ $log->created_at }}</td>
                                     <td>
                                         <div class="btn-toolbar" style="flex-wrap: nowrap;">
-                                            <div style="margin:0 2px;">
-                                                <a class="btn btn-primary" href="{{ route('logs.edit', $log->id) }}">Edit</a>
-                                            </div>
                                             <div style="margin: 0 2px;">
                                                 <form action="{{ route('logs.destroy', $log->id) }}" method="POST" style="display: inline">
                                                     @method('DELETE')

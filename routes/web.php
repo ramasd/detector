@@ -25,7 +25,7 @@ Auth::routes([
 Route::group(['middleware' => 'auth'], function() {
     Route::resource('users', 'UserController');
     Route::resource('projects', 'ProjectController');
-    Route::resource('logs', 'LogController');
+    Route::resource('logs', 'LogController', ['except' => ['edit', 'update']]);
     Route::get('users/loginas/{id}', 'UserController@loginAs')->name('users.loginAs');
 });
 
