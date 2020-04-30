@@ -57,6 +57,18 @@ interface ProjectServiceInterface
     public function tryToGetRequestData(Project $project);
 
     /**
+     * @param $response
+     * @return mixed|string
+     */
+    public function getLastRedirectUrl($response);
+
+    /**
+     * @param $response
+     * @return bool
+     */
+    public function isRedirect($response);
+
+    /**
      * @param Project $project
      * @return array|mixed
      */

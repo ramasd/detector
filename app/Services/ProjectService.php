@@ -94,7 +94,7 @@ class ProjectService implements ProjectServiceInterface
     {
         $data = [];
 
-        $response = Http::get($url);
+        $response = Http::withOptions(['allow_redirects' => ['track_redirects' => true]])->get($url);
 
         $data['status'] = $response->status();
         if (isset($response->transferStats)) {
@@ -102,22 +102,16 @@ class ProjectService implements ProjectServiceInterface
             $data['load_time'] = $response->transferStats->getHandlerStat('total_time');
             $data['server_ip'] = $response->transferStats->getHandlerStat('primary_ip');
         }
-        $data['redirect_detected'] = $this->isRedirect($url);
+        $data['redirect_detected'] = $this->isRedirect($response);
+
         $data['server_error'] = $response->serverError();
         $data['client_error'] = $response->clientError();
 
+        if ($this->isRedirect($response)) {
+            $data['last_redirect_url'] = $this->getLastRedirectUrl($response);
+        }
+
         return $data;
-    }
-
-    /**
-     * @param $url
-     * @return bool
-     */
-    public function isRedirect($url)
-    {
-        $response = Http::withOptions(['allow_redirects' => false])->get($url);
-
-        return $response->redirect();
     }
 
     /**
@@ -133,6 +127,27 @@ class ProjectService implements ProjectServiceInterface
         }
 
         return $request_data;
+    }
+
+    /**
+     * @param $response
+     * @return mixed|string
+     */
+    public function getLastRedirectUrl($response)
+    {
+        $redirectUrlsString = $response->getHeaderLine('X-Guzzle-Redirect-History');
+        $redirectUrlsArr = explode(", ", $redirectUrlsString);
+
+        return end($redirectUrlsArr);
+    }
+
+    /**
+     * @param $response
+     * @return bool
+     */
+    public function isRedirect($response)
+    {
+        return $response->getHeaderLine('X-Guzzle-Redirect-History') !== "";
     }
 
     /**
